@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git Markdown Helper</title>
+    <meta name="description" content="Compact Markdown helper for Git PRs and issues">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hero {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 16px;
+            background: linear-gradient(45deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .demo-container {
+            background: rgba(20, 20, 20, 0.95);
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .demo-header {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+            width: 220px;
+        }
+
+        .btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            user-select: none;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn.primary {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .btn.primary:hover {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        .btn.success {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        .btn.success:hover {
+            background: rgba(34, 197, 94, 0.3);
+            border-color: rgba(34, 197, 94, 0.4);
+        }
+
+        .separator {
+            grid-column: 1 / -1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 6px 0;
+        }
+
+        .output-area {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #fff;
+            min-height: 120px;
+            max-width: 600px;
+            width: 100%;
+            outline: none;
+            backdrop-filter: blur(5px);
+            resize: vertical;
+        }
+
+        .output-area:focus {
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .control-btn {
+            background: rgba(59, 130, 246, 0.2);
+            color: white;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .control-btn:hover {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .control-btn.danger {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .control-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            max-width: 1000px;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            backdrop-filter: blur(5px);
+            color: white;
+        }
+
+        .feature-card h3 {
+            color: #60a5fa;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+        }
+
+        .feature-card p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .download-section {
+            text-align: center;
+            color: white;
+            max-width: 600px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #60a5fa, #a78bfa);
+            color: white;
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1em;
+            margin: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(96, 165, 250, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(96, 165, 250, 0.4);
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(34, 197, 94, 0.9);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            font-weight: 500;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: rgba(239, 68, 68, 0.9);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5em;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1>📝 Git Markdown Helper</h1>
+        <p>GitのPRやIssueを書く時に便利な、コンパクトなMarkdown記法入力ツール</p>
+    </div>
+
+    <div class="demo-container">
+        <div class="demo-header">👆 ボタンをクリックしてMarkdown記法を入力</div>
+        
+        <div class="grid">
+            <!-- 見出し -->
+            <button class="btn" onclick="inject('# ')" title="見出し1">
+                <span style="font-size: 16px; font-weight: bold;">H1</span>
+            </button>
+            <button class="btn" onclick="inject('## ')" title="見出し2">
+                <span style="font-size: 14px; font-weight: bold;">H2</span>
+            </button>
+            <button class="btn" onclick="inject('### ')" title="見出し3">
+                <span style="font-size: 12px; font-weight: bold;">H3</span>
+            </button>
+            
+            <!-- テキスト装飾 -->
+            <button class="btn" onclick="inject('**太字**')" title="太字">
+                <span style="font-weight: bold;">B</span>
+            </button>
+            <button class="btn" onclick="inject('*斜体*')" title="斜体">
+                <span style="font-style: italic;">I</span>
+            </button>
+
+            <div class="separator"></div>
+
+            <!-- リスト -->
+            <button class="btn primary" onclick="inject('- [ ] ')" title="チェックボックス">
+                ☐
+            </button>
+            <button class="btn success" onclick="inject('- [x] ')" title="チェック済み">
+                ☑
+            </button>
+            <button class="btn" onclick="inject('- ')" title="箇条書き">
+                •
+            </button>
+            <button class="btn" onclick="inject('1. ')" title="番号付きリスト">
+                1.
+            </button>
+            <button class="btn" onclick="inject('> ')" title="引用">
+                ❝
+            </button>
+
+            <div class="separator"></div>
+
+            <!-- その他 -->
+            <button class="btn" onclick="inject('`code`')" title="インラインコード">
+                <span style="font-family: monospace; font-size: 12px;">&lt;/&gt;</span>
+            </button>
+            <button class="btn" onclick="inject('```\n\n```')" title="コードブロック">
+                <span style="font-family: monospace; font-size: 11px;">{ }</span>
+            </button>
+            <button class="btn" onclick="inject('---')" title="区切り線">
+                <span style="font-size: 16px;">―</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="output-area" id="output" contenteditable="true" spellcheck="false" placeholder="ここに入力されたMarkdown記法が表示されます。直接編集も可能です。"></div>
+    
+    <div class="controls">
+        <button class="control-btn" onclick="copyToClipboard()">📋 クリップボードにコピー</button>
+        <button class="control-btn danger" onclick="clearOutput()">🗑️ クリア</button>
+    </div>
+
+    <div class="features">
+        <div class="feature-card">
+            <h3>🚀 Web版の特徴</h3>
+            <p>ブラウザで即座に利用可能。ボタンをクリックするとMarkdown記法が入力され、コピーして任意の場所にペーストできます。</p>
+        </div>
+        
+        <div class="feature-card">
+            <h3>💻 デスクトップ版</h3>
+            <p>Electronアプリとして、Ctrl+Shift+Mでどこからでも呼び出し可能。バックグラウンドアプリに直接入力されます。</p>
+        </div>
+        
+        <div class="feature-card">
+            <h3>📝 対応記法</h3>
+            <p>見出し、太字、斜体、チェックボックス、リスト、引用、コードブロックなど、GitのPR作成に必要な記法を網羅。</p>
+        </div>
+    </div>
+
+    <div class="download-section">
+        <h2 style="margin-bottom: 16px;">💾 デスクトップ版をダウンロード</h2>
+        <p style="opacity: 0.9; margin-bottom: 24px;">グローバルショートカットで更に便利に</p>
+        <a href="https://github.com/yourusername/git-markdown-helper/releases" class="download-btn" target="_blank">
+            📥 Windows版をダウンロード
+        </a>
+        <a href="https://github.com/yourusername/git-markdown-helper" class="download-btn" target="_blank">
+            🔧 GitHubで見る
+        </a>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        function inject(syntax) {
+            const text = syntax.replace(/\\n/g, '\n');
+            const output = document.getElementById('output');
+            
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0 && output.contains(selection.anchorNode)) {
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+                const textNode = document.createTextNode(text);
+                range.insertNode(textNode);
+                range.setStartAfter(textNode);
+                range.setEndAfter(textNode);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            } else {
+                const currentText = output.textContent;
+                const newText = currentText + (currentText ? '\n' : '') + text;
+                output.textContent = newText;
+                
+                const range = document.createRange();
+                range.selectNodeContents(output);
+                range.collapse(false);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+            
+            output.focus();
+            
+            // ボタンのフィードバック
+            const btn = event.target.closest('.btn');
+            if (btn) {
+                btn.style.transform = 'scale(0.9)';
+                setTimeout(() => {
+                    btn.style.transform = '';
+                }, 100);
+            }
+        }
+        
+        function copyToClipboard() {
+            const output = document.getElementById('output');
+            const text = output.textContent;
+            
+            if (text.trim() === '') {
+                showToast('コピーするテキストがありません', 'error');
+                return;
+            }
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('クリップボードにコピーしました！');
+            }).catch(() => {
+                showToast('コピーに失敗しました', 'error');
+            });
+        }
+        
+        function clearOutput() {
+            const output = document.getElementById('output');
+            output.textContent = '';
+            output.focus();
+            showToast('クリアしました');
+        }
+        
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast' + (type === 'error' ? ' error' : '');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+        
+        // キーボードショートカット
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                if (e.key === 'c' && window.getSelection().toString() === '') {
+                    e.preventDefault();
+                    copyToClipboard();
+                } else if (e.key === 'l') {
+                    e.preventDefault();
+                    clearOutput();
+                }
+            }
+        });
+        
+        // 初期メッセージ
+        document.addEventListener('DOMContentLoaded', () => {
+            const output = document.getElementById('output');
+            output.focus();
+            setTimeout(() => {
+                showToast('ボタンをクリックしてMarkdown記法を入力してみてください！');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
