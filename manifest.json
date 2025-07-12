@@ -1,0 +1,37 @@
+{
+  "name": "Git Markdown Helper",
+  "short_name": "MDHelper",
+  "description": "Compact Markdown helper for Git PRs and issues",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e293b",
+  "theme_color": "#60a5fa",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["productivity", "developer", "tools"],
+  "shortcuts": [
+    {
+      "name": "Open Helper",
+      "short_name": "Helper",
+      "description": "Open Markdown Helper",
+      "url": "/",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
