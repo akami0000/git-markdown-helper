@@ -4,7 +4,7 @@ GitのPRやIssueを書く時に便利な、コンパクトなMarkdown記法入�
 
 ## 🌐 Web版を試す
 
-**👉 [https://yourusername.github.io/git-markdown-helper/](https://yourusername.github.io/git-markdown-helper/)**
+**👉 [https://akami0000.github.io/git-markdown-helper/](https://akami0000.github.io/git-markdown-helper/)**
 
 ブラウザで即座に利用可能！ボタンをクリックしてMarkdown記法を入力し、コピー&ペーストで使用できます。
 
@@ -39,7 +39,7 @@ GitのPRやIssueを書く時に便利な、コンパクトなMarkdown記法入�
 
 ### ダウンロード
 
-[📥 最新版をダウンロード](https://github.com/yourusername/git-markdown-helper/releases)
+[📥 最新版をダウンロード](https://github.com/akami0000/git-markdown-helper/releases)
 
 ## 🚀 使用例
 
@@ -69,7 +69,7 @@ Fixes #123
 
 ### セットアップ
 ```bash
-git clone https://github.com/yourusername/git-markdown-helper.git
+git clone https://github.com/akami0000/git-markdown-helper.git
 cd git-markdown-helper
 npm install
 npm start

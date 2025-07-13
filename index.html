@@ -6,6 +6,8 @@
     <title>Git Markdown Helper</title>
     <meta name="description" content="Compact Markdown helper for Git PRs and issues">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#60a5fa">
     <style>
         * {
             margin: 0;
@@ -370,10 +372,10 @@
     <div class="download-section">
         <h2 style="margin-bottom: 16px;">💾 デスクトップ版をダウンロード</h2>
         <p style="opacity: 0.9; margin-bottom: 24px;">グローバルショートカットで更に便利に</p>
-        <a href="https://github.com/yourusername/git-markdown-helper/releases" class="download-btn" target="_blank">
+        <a href="https://github.com/akami0000/git-markdown-helper/releases" class="download-btn" target="_blank">
             📥 Windows版をダウンロード
         </a>
-        <a href="https://github.com/yourusername/git-markdown-helper" class="download-btn" target="_blank">
+        <a href="https://github.com/akami0000/git-markdown-helper" class="download-btn" target="_blank">
             🔧 GitHubで見る
         </a>
     </div>
@@ -463,6 +465,19 @@
             }
         });
         
+        // Service Worker登録
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('Service Worker registered:', registration);
+                    })
+                    .catch((error) => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+
         // 初期メッセージ
         document.addEventListener('DOMContentLoaded', () => {
             const output = document.getElementById('output');
